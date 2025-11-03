@@ -21,11 +21,11 @@ type Transaction = {
   note?: string;
 };
 
-export const HomeScreen: React.FC<{ token?: string; onLogout?: () => void }> = ({ token, onLogout }) => {
+export const HomeScreen: React.FC<{ token?: string; onLogout?: () => void; initialUser?: any }> = ({ token, onLogout, initialUser }) => {
   // Base URL for the backend API. Change this when testing on device/emulator:
   // - Android emulator (Android Studio): use 10.0.2.2
   // - Expo on same machine (tunnel): use http://127.0.0.1:5000 or your LAN IP
-  const BASE_URL = 'http://192.168.8.101:5000';
+  const BASE_URL = 'http://192.168.8.100:5000';
   const [formMode, setFormMode] = useState<'none' | 'expense' | 'income'>('none');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
@@ -33,8 +33,8 @@ export const HomeScreen: React.FC<{ token?: string; onLogout?: () => void }> = (
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [activeTab, setActiveTab] = useState<'home' | 'settings'>('home');
   const [darkMode, setDarkMode] = useState(false);
-  const [userName, setUserName] = useState('Guest User');
-  const [userImage, setUserImage] = useState('https://i.pravatar.cc/100');
+  const [userName, setUserName] = useState(initialUser?.name ?? 'Guest User');
+  const [userImage, setUserImage] = useState(initialUser?.image ?? 'https://i.pravatar.cc/100');
   const [activeQuick, setActiveQuick] = useState<'none' | 'expense' | 'income'>('none');
 
   const openForm = (mode: 'expense' | 'income') => {
@@ -53,6 +53,14 @@ export const HomeScreen: React.FC<{ token?: string; onLogout?: () => void }> = (
       fetchSummary();
     }
   }, [token]);
+
+  // If parent provides an initialUser (from login/signup), prefer that immediately
+  useEffect(() => {
+    if (initialUser) {
+      setUserName(initialUser.name || 'Guest User');
+      setUserImage(initialUser.image || 'https://i.pravatar.cc/100');
+    }
+  }, [initialUser]);
 
   const fetchTransactions = async () => {
     try {
@@ -132,9 +140,11 @@ export const HomeScreen: React.FC<{ token?: string; onLogout?: () => void }> = (
         await fetchTransactions();
         await fetchSummary();
       } else {
+        Alert.alert('Error', 'Failed to save transaction. Please try again.');
         console.warn('Failed to save transaction', await res.text());
       }
     } catch (e) {
+      Alert.alert('Error', 'Failed to save transaction. Please check your connection and try again.');
       console.warn('Failed to save transaction', e);
     }
   };
@@ -155,7 +165,7 @@ export const HomeScreen: React.FC<{ token?: string; onLogout?: () => void }> = (
     setActiveQuick('none');
   };
 
-  const submit = () => {
+  const submit = async () => {
     const parsed = parseFloat(amount.replace(/[^0-9.]/g, '')) || 0;
     if (!parsed || parsed <= 0) {
       Alert.alert('Invalid amount', 'Please enter a valid amount greater than 0');
@@ -170,7 +180,7 @@ export const HomeScreen: React.FC<{ token?: string; onLogout?: () => void }> = (
     };
 
     // send to backend and refresh list
-    saveTransaction(tx);
+    await saveTransaction(tx);
     closeForm();
   };
 

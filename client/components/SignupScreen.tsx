@@ -8,7 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
+  Pressable,
   Keyboard,
   ScrollView,
   StyleSheet,
@@ -19,7 +19,7 @@ type Props = {
   switchToLogin: () => void;
 };
 
-const BASE_URL = 'http://192.168.8.101:5000';
+const BASE_URL = 'http://192.168.8.100:5000';
 
 export const SignupScreen = ({ onAuth, switchToLogin }: Props) => {
   const [name, setName] = useState('');
@@ -52,77 +52,68 @@ export const SignupScreen = ({ onAuth, switchToLogin }: Props) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View style={styles.decorTop} />
-      <View style={styles.decorBottom} />
+      <View style={[styles.decorTop, { pointerEvents: 'none' }]} />
+      <View style={[styles.decorBottom, { pointerEvents: 'none' }]} />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1"
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            <View className="flex-1 items-center justify-center px-6">
-              <View className="w-full max-w-lg">
-                <View className="bg-white rounded-2xl p-6 shadow-lg">
-                  <Text className="text-3xl font-extrabold text-center text-slate-800 mb-1">Create account</Text>
-                  <Text className="text-center text-slate-500 mb-6">Sign up to continue to Budget Buddy</Text>
+      <View className="flex-1 items-center justify-center px-6">
+        <View className="w-full max-w-lg">
+          <View className="bg-white rounded-2xl p-6 shadow-lg">
+            <Text className="text-3xl font-extrabold text-center text-slate-800 mb-1">Create account</Text>
+            <Text className="text-center text-slate-500 mb-6">Sign up to continue to Budget Buddy</Text>
 
-                  <TextInput
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Full name"
-                    keyboardType="default"
-                    autoCapitalize="words"
-                    accessibilityLabel="Full name"
-                    className="border border-gray-200 rounded-xl px-4 py-3 mb-4 bg-gray-50"
-                    editable={true}
-                  />
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="Full name"
+              keyboardType="default"
+              autoCapitalize="words"
+              accessibilityLabel="Full name"
+              style={{ borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16, backgroundColor: '#f9fafb' }}
+              editable={true}
+            />
 
-                  <TextInput
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="Email"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    textContentType="username"
-                    accessibilityLabel="Email"
-                    className="border border-gray-200 rounded-xl px-4 py-3 mb-4 bg-gray-50"
-                    editable={true}
-                  />
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              textContentType="username"
+              accessibilityLabel="Email"
+              style={{ borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16, backgroundColor: '#f9fafb' }}
+              editable={true}
+            />
 
-                  <TextInput
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="Password"
-                    secureTextEntry
-                    textContentType="password"
-                    accessibilityLabel="Password"
-                    className="border border-gray-200 rounded-xl px-4 py-3 mb-4 bg-gray-50"
-                    editable={true}
-                  />
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              secureTextEntry
+              textContentType="password"
+              accessibilityLabel="Password"
+              style={{ borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16, backgroundColor: '#f9fafb' }}
+              editable={true}
+            />
 
-                  <TouchableOpacity
-                    onPress={submit}
-                    accessibilityRole="button"
-                    className="bg-indigo-600 rounded-xl py-3 items-center mb-3"
-                  >
-                    <Text className="text-white font-semibold">{loading ? 'Creating...' : 'Create account'}</Text>
-                  </TouchableOpacity>
+            <TouchableOpacity
+              onPress={submit}
+              accessibilityRole="button"
+              className="bg-indigo-600 rounded-xl py-3 items-center mb-3"
+            >
+              <Text className="text-white font-semibold">{loading ? 'Creating...' : 'Create account'}</Text>
+            </TouchableOpacity>
 
-                  <View className="flex-row justify-between items-center">
-                    <TouchableOpacity onPress={switchToLogin} className="py-2">
-                      <Text className="text-indigo-600 font-medium">Sign in</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => Alert.alert('Not implemented', 'Help/Privacy') } className="py-2">
-                      <Text className="text-slate-500">Help</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
+            <View className="flex-row justify-between items-center">
+              <TouchableOpacity onPress={switchToLogin} className="py-2">
+                <Text className="text-indigo-600 font-medium">Sign in</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => Alert.alert('Not implemented', 'Help/Privacy') } className="py-2">
+                <Text className="text-slate-500">Help</Text>
+              </TouchableOpacity>
             </View>
-          </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+          </View>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -137,7 +128,6 @@ const styles = StyleSheet.create({
     top: -80,
     left: -60,
     transform: [{ rotate: '15deg' }],
-    pointerEvents: 'none',
   },
   decorBottom: {
     position: 'absolute',
@@ -148,7 +138,6 @@ const styles = StyleSheet.create({
     right: -40,
     bottom: -60,
     transform: [{ rotate: '-10deg' }],
-    pointerEvents: 'none',
   },
 });
 

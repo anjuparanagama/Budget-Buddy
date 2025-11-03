@@ -3,7 +3,7 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
+  Pressable,
   Keyboard,
   View,
   Text,
@@ -18,7 +18,7 @@ type Props = {
   switchToSignup: () => void;
 };
 
-const BASE_URL = 'http://192.168.8.101:5000';
+const BASE_URL = 'http://192.168.8.100:5000';
 
 export const LoginScreen = ({ onAuth, switchToSignup }: Props) => {
   const [identifier, setIdentifier] = useState('');
@@ -45,64 +45,57 @@ export const LoginScreen = ({ onAuth, switchToSignup }: Props) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View style={styles.decorTop} />
-      <View style={styles.decorBottom} />
+      <View style={[styles.decorTop, { pointerEvents: 'none' }]} />
+      <View style={[styles.decorBottom, { pointerEvents: 'none' }]} />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1"
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View className="flex-1 items-center justify-center px-6">
-            <View className="w-full max-w-lg">
-              <View className="bg-white rounded-2xl p-6 shadow-lg">
-                <Text className="text-3xl font-extrabold text-center text-slate-800 mb-1">Welcome back</Text>
-                <Text className="text-center text-slate-500 mb-6">Sign in to continue to Budget Buddy</Text>
+      <View className="flex-1 items-center justify-center px-6">
+        <View className="w-full max-w-lg">
+          <View className="bg-white rounded-2xl p-6 shadow-lg">
+            <Text className="text-3xl font-extrabold text-center text-slate-800 mb-1">Welcome back</Text>
+            <Text className="text-center text-slate-500 mb-6">Sign in to continue to Budget Buddy</Text>
 
-                <TextInput
-                  value={identifier}
-                  onChangeText={setIdentifier}
-                  placeholder="Email or username"
-                  keyboardType="default"
-                  autoCapitalize="none"
-                  textContentType="username"
-                  accessibilityLabel="Email or username"
-                  className="border border-gray-200 rounded-xl px-4 py-3 mb-4 bg-gray-50"
-                  editable={true}
-                />
+            <TextInput
+              value={identifier}
+              onChangeText={setIdentifier}
+              placeholder="Email or username"
+              keyboardType="default"
+              autoCapitalize="none"
+              textContentType="username"
+              accessibilityLabel="Email or username"
+              style={{ borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16, backgroundColor: '#f9fafb' }}
+              editable={true}
+            />
 
-                <TextInput
-                  value={password}
-                  onChangeText={setPassword}
-                  placeholder="Password"
-                  secureTextEntry
-                  textContentType="password"
-                  accessibilityLabel="Password"
-                  className="border border-gray-200 rounded-xl px-4 py-3 mb-4 bg-gray-50"
-                  editable={true}
-                />
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              secureTextEntry
+              textContentType="password"
+              accessibilityLabel="Password"
+              style={{ borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16, backgroundColor: '#f9fafb' }}
+              editable={true}
+            />
 
-                <TouchableOpacity
-                  onPress={submit}
-                  accessibilityRole="button"
-                  className="bg-indigo-600 rounded-xl py-3 items-center mb-3"
-                >
-                  <Text className="text-white font-semibold">Sign in</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+              onPress={submit}
+              accessibilityRole="button"
+              className="bg-indigo-600 rounded-xl py-3 items-center mb-3"
+            >
+              <Text className="text-white font-semibold">Sign in</Text>
+            </TouchableOpacity>
 
-                <View className="flex-row justify-between items-center">
-                  <TouchableOpacity onPress={switchToSignup} className="py-2">
-                    <Text className="text-indigo-600 font-medium">Create an account</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => Alert.alert('Not implemented', 'Forgot password flow') } className="py-2">
-                    <Text className="text-slate-500">Forgot?</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <View className="flex-row justify-between items-center">
+              <TouchableOpacity onPress={switchToSignup} className="py-2">
+                <Text className="text-indigo-600 font-medium">Create an account</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => Alert.alert('Not implemented', 'Forgot password flow') } className="py-2">
+                <Text className="text-slate-500">Forgot?</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -117,8 +110,6 @@ const styles = StyleSheet.create({
     top: -80,
     left: -60,
     transform: [{ rotate: '15deg' }],
-    // allow touches to pass through decorative views
-    pointerEvents: 'none',
   },
   decorBottom: {
     position: 'absolute',
@@ -129,8 +120,6 @@ const styles = StyleSheet.create({
     right: -40,
     bottom: -60,
     transform: [{ rotate: '-10deg' }],
-    // allow touches to pass through decorative views
-    pointerEvents: 'none',
   },
 });
 

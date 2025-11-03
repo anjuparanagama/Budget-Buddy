@@ -13,6 +13,7 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [token, setToken] = useState<string | null>(null);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [currentUser, setCurrentUser] = useState<any | null>(null);
 
   useEffect(() => {
     const loadToken = async () => {
@@ -20,6 +21,13 @@ export default function App() {
         const storedToken = await AsyncStorage.getItem('authToken');
         if (storedToken) {
           setToken(storedToken);
+          // try to load persisted user for instant UI
+          try {
+            const storedUser = await AsyncStorage.getItem('authUser');
+            if (storedUser) setCurrentUser(JSON.parse(storedUser));
+          } catch (e) {
+            /* ignore */
+          }
         }
       } catch (e) {
         console.warn('Failed to load token', e);
@@ -32,8 +40,16 @@ export default function App() {
 
   const handleAuth = async (tok: string, user: any) => {
     setToken(tok);
+    setCurrentUser(user || null);
     try {
       await AsyncStorage.setItem('authToken', tok);
+      if (user) {
+        try {
+          await AsyncStorage.setItem('authUser', JSON.stringify(user));
+        } catch (e) {
+          /* ignore */
+        }
+      }
     } catch (e) {
       console.warn('Failed to save token', e);
     }
@@ -41,8 +57,10 @@ export default function App() {
 
   const handleLogout = async () => {
     setToken(null);
+    setCurrentUser(null);
     try {
       await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem('authUser');
     } catch (e) {
       console.warn('Failed to remove token', e);
     }
@@ -53,7 +71,7 @@ export default function App() {
       {showSplash ? (
         <SplashScreen />
       ) : token ? (
-        <HomeScreen token={token} onLogout={handleLogout} />
+        <HomeScreen token={token} onLogout={handleLogout} initialUser={currentUser} />
       ) : authMode === 'login' ? (
         <LoginScreen onAuth={handleAuth} switchToSignup={() => setAuthMode('signup')} />
       ) : (
